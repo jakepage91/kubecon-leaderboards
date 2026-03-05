@@ -1,10 +1,10 @@
 "use client";
 
-import { LeaderboardPanel, useLeaderboardRealtime } from "@/components/Leaderboard";
-import { LiveTimerOverlay } from "@/components/LiveTimerOverlay";
+import { LeaderboardPanel, useLeaderboardRealtime, useLiveTimers } from "@/components/Leaderboard";
 
 export default function MirrordDisplayPage() {
   const { data, newLeaderId } = useLeaderboardRealtime(["mirrord"]);
+  const liveTimers = useLiveTimers();
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -27,10 +27,8 @@ export default function MirrordDisplayPage() {
       </header>
 
       <div className="flex-1 min-h-0 flex">
-        <LeaderboardPanel route="mirrord" runs={data.mirrord} newLeaderId={newLeaderId} fullscreen />
+        <LeaderboardPanel route="mirrord" runs={data.mirrord} newLeaderId={newLeaderId} liveTimer={liveTimers.mirrord} fullscreen />
       </div>
-
-      <LiveTimerOverlay route="mirrord" />
 
       <footer className="flex items-center justify-center gap-3 mt-2 lg:mt-3 shrink-0">
         <p className="text-gray-300 text-[10px] lg:text-xs vintage-footer">

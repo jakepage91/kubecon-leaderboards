@@ -1,10 +1,10 @@
 "use client";
 
-import { LeaderboardPanel, useLeaderboardRealtime } from "@/components/Leaderboard";
-import { LiveTimerOverlay } from "@/components/LiveTimerOverlay";
+import { LeaderboardPanel, useLeaderboardRealtime, useLiveTimers } from "@/components/Leaderboard";
 
 export default function DisplayBothPage() {
   const { data, newLeaderId } = useLeaderboardRealtime(["legacy", "mirrord"]);
+  const liveTimers = useLiveTimers();
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -28,12 +28,9 @@ export default function DisplayBothPage() {
       </header>
 
       <div className="flex-1 flex gap-4 lg:gap-6 min-h-0">
-        <LeaderboardPanel route="legacy" runs={data.legacy} newLeaderId={newLeaderId} />
-        <LeaderboardPanel route="mirrord" runs={data.mirrord} newLeaderId={newLeaderId} />
+        <LeaderboardPanel route="legacy" runs={data.legacy} newLeaderId={newLeaderId} liveTimer={liveTimers.legacy} />
+        <LeaderboardPanel route="mirrord" runs={data.mirrord} newLeaderId={newLeaderId} liveTimer={liveTimers.mirrord} />
       </div>
-
-      <LiveTimerOverlay route="legacy" />
-      <LiveTimerOverlay route="mirrord" />
 
       <footer className="flex items-center justify-center gap-3 mt-2 lg:mt-3 shrink-0">
         <p className="text-gray-300 text-[10px] lg:text-xs vintage-footer">

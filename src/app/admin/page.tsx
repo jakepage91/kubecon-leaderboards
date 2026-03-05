@@ -67,7 +67,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
         <h1 className="text-2xl font-bold text-center mb-6">Staff Login</h1>
         {error && <p className="text-red-400 text-sm text-center mb-4">{error}</p>}
         <button onClick={handleGoogleLogin} disabled={loading}
-          className="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 rounded-lg font-semibold transition-colors">
+          className="w-full py-2.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 rounded-lg font-semibold transition-colors">
           {loading ? "Redirecting..." : "Sign in with Google"}
         </button>
         <p className="text-gray-500 text-xs text-center mt-3">
@@ -319,7 +319,7 @@ function EntryForm({ user }: { user: User }) {
             </div>
             <div className={`py-3 rounded-xl font-bold text-sm text-center transition-all ${
               route === "mirrord"
-                ? "bg-indigo-600 text-white ring-2 ring-indigo-400"
+                ? "bg-violet-600 text-white ring-2 ring-violet-400"
                 : "bg-gray-800 text-gray-500"
             }`}>
               2. mirrord Fast Lane
@@ -331,7 +331,7 @@ function EntryForm({ user }: { user: User }) {
             <label className="block text-sm font-medium text-gray-300 mb-1">Player Name *</label>
             <input type="text" required value={playerName} onChange={(e) => setPlayerName(e.target.value)}
               readOnly={legacyDone}
-              className={`w-full px-3 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white text-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 ${legacyDone ? "opacity-60" : ""}`}
+              className={`w-full px-3 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white text-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${legacyDone ? "opacity-60" : ""}`}
               placeholder="e.g. Jane D." autoComplete="off" />
           </div>
 
@@ -340,7 +340,7 @@ function EntryForm({ user }: { user: User }) {
             <label className="block text-sm font-medium text-gray-300 mb-1">Email (optional)</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
               readOnly={legacyDone}
-              className={`w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 ${legacyDone ? "opacity-60" : ""}`}
+              className={`w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-violet-500 ${legacyDone ? "opacity-60" : ""}`}
               placeholder="player@company.com" autoComplete="off" />
           </div>
 
@@ -349,7 +349,7 @@ function EntryForm({ user }: { user: User }) {
             if (!playerName.trim()) { setToast({ message: "Enter player name first", type: "error" }); return; }
             startTimer();
           }}
-            className="w-full py-5 rounded-2xl font-black text-3xl transition-colors tracking-wider bg-indigo-600 hover:bg-indigo-500 text-white"
+            className="w-full py-5 rounded-2xl font-black text-3xl transition-colors tracking-wider bg-violet-600 hover:bg-violet-500 text-white"
             style={{ fontFamily: "'Alfa Slab One', serif" }}>
             GO!
           </button>
@@ -407,7 +407,7 @@ function EntryForm({ user }: { user: User }) {
 
           <div className="grid grid-cols-2 gap-3 w-full">
             <button type="button" onClick={proceedToStrokes}
-              className="py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold text-lg transition-colors"
+              className="py-4 bg-violet-600 hover:bg-violet-500 rounded-xl font-bold text-lg transition-colors"
               style={{ fontFamily: "'Alfa Slab One', serif" }}>
               Next: Swings
             </button>
@@ -502,7 +502,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-2 border-violet-400 border-t-transparent rounded-full" />
       </div>
     );
   }

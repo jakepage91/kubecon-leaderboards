@@ -1,10 +1,10 @@
 "use client";
 
-import { LeaderboardPanel, useLeaderboardRealtime } from "@/components/Leaderboard";
-import { LiveTimerOverlay } from "@/components/LiveTimerOverlay";
+import { LeaderboardPanel, useLeaderboardRealtime, useLiveTimers } from "@/components/Leaderboard";
 
 export default function LegacyDisplayPage() {
   const { data, newLeaderId } = useLeaderboardRealtime(["legacy"]);
+  const liveTimers = useLiveTimers();
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -27,10 +27,8 @@ export default function LegacyDisplayPage() {
       </header>
 
       <div className="flex-1 min-h-0 flex">
-        <LeaderboardPanel route="legacy" runs={data.legacy} newLeaderId={newLeaderId} fullscreen />
+        <LeaderboardPanel route="legacy" runs={data.legacy} newLeaderId={newLeaderId} liveTimer={liveTimers.legacy} fullscreen />
       </div>
-
-      <LiveTimerOverlay route="legacy" />
 
       <footer className="flex items-center justify-center gap-3 mt-2 lg:mt-3 shrink-0">
         <p className="text-gray-300 text-[10px] lg:text-xs vintage-footer">

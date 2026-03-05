@@ -13,6 +13,94 @@ const ROUTE_META: Record<Route, { label: string; colorClass: string }> = {
 
 const PRIMARY_ROWS = 15;
 
+// ── Live timer types ──────────────────────────────────────
+interface TimerPayload {
+  player_name: string;
+  route: Route;
+  state: "running" | "idle";
+  elapsed_ms: number;
+}
+
+interface LiveTimerState {
+  visible: boolean;
+  playerName: string;
+  displayMs: number;
+}
+
+// ── Single subscription for both routes ──────────────────
+export function useLiveTimers(): Record<Route, LiveTimerState> {
+  const [timers, setTimers] = useState<Record<Route, LiveTimerState>>({
+    legacy: { visible: false, playerName: "", displayMs: 0 },
+    mirrord: { visible: false, playerName: "", displayMs: 0 },
+  });
+
+  const lastBroadcastRef = useRef<Record<Route, { elapsed_ms: number; receivedAt: number } | null>>({
+    legacy: null,
+    mirrord: null,
+  });
+  const rafRef = useRef(0);
+  const hideTimeoutsRef = useRef<Partial<Record<Route, NodeJS.Timeout>>>({});
+
+  // RAF interpolation
+  useEffect(() => {
+    const tick = () => {
+      const legacy = lastBroadcastRef.current.legacy;
+      const mirrord = lastBroadcastRef.current.mirrord;
+      if (legacy || mirrord) {
+        setTimers(prev => ({
+          legacy: legacy
+            ? { ...prev.legacy, displayMs: legacy.elapsed_ms + Math.floor(performance.now() - legacy.receivedAt) }
+            : prev.legacy,
+          mirrord: mirrord
+            ? { ...prev.mirrord, displayMs: mirrord.elapsed_ms + Math.floor(performance.now() - mirrord.receivedAt) }
+            : prev.mirrord,
+        }));
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  // Single Supabase Realtime broadcast subscription for both routes
+  useEffect(() => {
+    const channel = supabase
+      .channel("timer")
+      .on("broadcast", { event: "tick" }, ({ payload }: { payload: TimerPayload }) => {
+        const route = payload.route;
+        if (payload.state === "running") {
+          lastBroadcastRef.current[route] = {
+            elapsed_ms: payload.elapsed_ms,
+            receivedAt: performance.now(),
+          };
+          setTimers(prev => ({
+            ...prev,
+            [route]: { ...prev[route], visible: true, playerName: payload.player_name },
+          }));
+          if (hideTimeoutsRef.current[route]) clearTimeout(hideTimeoutsRef.current[route]);
+          hideTimeoutsRef.current[route] = setTimeout(() => {
+            lastBroadcastRef.current[route] = null;
+            setTimers(prev => ({ ...prev, [route]: { ...prev[route], visible: false } }));
+          }, 3000);
+        } else {
+          lastBroadcastRef.current[route] = null;
+          setTimers(prev => ({ ...prev, [route]: { ...prev[route], visible: false } }));
+          if (hideTimeoutsRef.current[route]) clearTimeout(hideTimeoutsRef.current[route]);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+      cancelAnimationFrame(rafRef.current);
+      Object.values(hideTimeoutsRef.current).forEach(t => t && clearTimeout(t));
+    };
+  }, []);
+
+  return timers;
+}
+
+// ── Leaderboard data + confetti ───────────────────────────
 function fireConfetti() {
   const duration = 3000;
   const end = Date.now() + duration;
@@ -32,11 +120,10 @@ async function fetchLeaderboard(route: Route): Promise<Run[]> {
     .eq("archived", false)
     .order("score_ms", { ascending: true })
     .limit(200);
-  if (error) { console.error(`Error fetching ${route}:`, error); return []; }
+  if (error) { console.error("Error fetching " + route + ":", error); return []; }
   return (data as Run[]) ?? [];
 }
 
-// Pad array to exactly `count` rows (empty slots rendered as blank)
 function padRows(runs: Run[], count: number): (Run | null)[] {
   const out: (Run | null)[] = [...runs];
   while (out.length < count) out.push(null);
@@ -58,11 +145,7 @@ function RankCell({ run, index }: { run: Run | null; index: number }) {
 }
 
 function ScoreTable({
-  rows,
-  startIndex,
-  showHeader,
-  sz,
-  newLeaderId,
+  rows, startIndex, showHeader, sz, newLeaderId,
 }: {
   rows: (Run | null)[];
   startIndex: number;
@@ -75,11 +158,11 @@ function ScoreTable({
       {showHeader && (
         <thead>
           <tr>
-            <th className={`sb-cell sb-cell-rank ${sz.head}`}>#</th>
-            <th className={`sb-cell sb-cell-player ${sz.head}`}>PLAYER</th>
-            <th className={`sb-cell sb-cell-time ${sz.head}`}>TIME</th>
-            <th className={`sb-cell sb-cell-strokes ${sz.head}`}>SW</th>
-            <th className={`sb-cell sb-cell-score ${sz.head}`}>SCORE</th>
+            <th className={"sb-cell sb-cell-rank " + sz.head}>#</th>
+            <th className={"sb-cell sb-cell-player " + sz.head}>PLAYER</th>
+            <th className={"sb-cell sb-cell-time " + sz.head}>TIME</th>
+            <th className={"sb-cell sb-cell-strokes " + sz.head}>SW</th>
+            <th className={"sb-cell sb-cell-score " + sz.head}>SCORE</th>
           </tr>
         </thead>
       )}
@@ -88,22 +171,15 @@ function ScoreTable({
           const globalIndex = startIndex + i;
           const isNewLeader = run?.id === newLeaderId && globalIndex === 0;
           return (
-            <tr key={run?.id ?? `empty-${globalIndex}`} className={`${globalIndex === 0 && run ? "sb-row-first" : ""} ${isNewLeader ? "new-leader-row" : ""}`}>
-              <td className={`sb-cell sb-cell-rank ${sz.rank}`}>
+            <tr key={run?.id ?? "empty-" + globalIndex}
+              className={(globalIndex === 0 && run ? "sb-row-first" : "") + " " + (isNewLeader ? "new-leader-row" : "")}>
+              <td className={"sb-cell sb-cell-rank " + sz.rank}>
                 <RankCell run={run} index={globalIndex} />
               </td>
-              <td className={`sb-cell sb-cell-player ${sz.cell}`}>
-                {run?.player_name ?? ""}
-              </td>
-              <td className={`sb-cell sb-cell-time ${sz.cell}`}>
-                {run ? formatMs(run.elapsed_ms) : ""}
-              </td>
-              <td className={`sb-cell sb-cell-strokes ${sz.cell}`}>
-                {run ? run.strokes : ""}
-              </td>
-              <td className={`sb-cell sb-cell-score ${sz.cell}`}>
-                {run ? formatMs(run.score_ms) : ""}
-              </td>
+              <td className={"sb-cell sb-cell-player " + sz.cell}>{run?.player_name ?? ""}</td>
+              <td className={"sb-cell sb-cell-time " + sz.cell}>{run ? formatMs(run.elapsed_ms) : ""}</td>
+              <td className={"sb-cell sb-cell-strokes " + sz.cell}>{run ? run.strokes : ""}</td>
+              <td className={"sb-cell sb-cell-score " + sz.cell}>{run ? formatMs(run.score_ms) : ""}</td>
             </tr>
           );
         })}
@@ -113,9 +189,13 @@ function ScoreTable({
 }
 
 export function LeaderboardPanel({
-  route, runs, newLeaderId, fullscreen = false,
+  route, runs, newLeaderId, liveTimer, fullscreen = false,
 }: {
-  route: Route; runs: Run[]; newLeaderId: string | null; fullscreen?: boolean;
+  route: Route;
+  runs: Run[];
+  newLeaderId: string | null;
+  liveTimer?: LiveTimerState;
+  fullscreen?: boolean;
 }) {
   const meta = ROUTE_META[route];
   const primaryRows = padRows(runs.slice(0, PRIMARY_ROWS), PRIMARY_ROWS);
@@ -126,25 +206,39 @@ export function LeaderboardPanel({
     : { title: "text-lg lg:text-2xl", head: "text-[8px] lg:text-[10px]", cell: "text-[10px] lg:text-xs", rank: "text-[10px] lg:text-sm" };
 
   return (
-    <div className={`sb ${meta.colorClass} flex-1 flex flex-col min-h-0`}>
-      {/* Ornamental top badge */}
+    <div className={"sb " + meta.colorClass + " flex-1 flex flex-col min-h-0"}>
       <div className="sb-badge">
         <div className="sb-badge-inner">
           <span className={sz.head}>LEADERBOARD</span>
         </div>
       </div>
 
-      {/* Route title */}
-      <h2 className={`sb-title ${sz.title}`}>{meta.label}</h2>
+      <h2 className={"sb-title " + sz.title}>{meta.label}</h2>
 
-      {/* Two-column scoreboard */}
+      {/* NOW PLAYING strip */}
+      {liveTimer?.visible && (
+        <div className="relative z-[1] mx-1 mb-2 flex items-center gap-3 bg-black/30 border border-white/25 rounded-lg px-3 py-2">
+          <div className="flex-1 min-w-0">
+            <p className="text-white/60 uppercase tracking-widest leading-none mb-0.5"
+              style={{ fontFamily: "'Alfa Slab One', serif", fontSize: "clamp(7px, 1vw, 10px)" }}>
+              ▶ Now Playing
+            </p>
+            <p className="text-white font-bold truncate"
+              style={{ fontFamily: "'Oswald', sans-serif", fontSize: "clamp(12px, 2vw, 18px)" }}>
+              {liveTimer.playerName}
+            </p>
+          </div>
+          <p className="text-emerald-400 font-mono font-bold tabular-nums shrink-0"
+            style={{ fontSize: "clamp(18px, 3vw, 30px)" }}>
+            {formatMs(liveTimer.displayMs)}
+          </p>
+        </div>
+      )}
+
       <div className="flex gap-1 lg:gap-2 flex-1 min-h-0 relative z-[1]">
-        {/* Primary column — top 15, fixed */}
         <div className="flex-1 min-w-0">
           <ScoreTable rows={primaryRows} startIndex={0} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
         </div>
-
-        {/* Overflow column — scrollable */}
         <div className="flex-1 min-w-0 overflow-y-auto sb-scroll">
           {overflowRuns.length > 0 ? (
             <ScoreTable rows={overflowRuns} startIndex={PRIMARY_ROWS} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
