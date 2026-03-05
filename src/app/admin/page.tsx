@@ -34,7 +34,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/admin`,
-        queryParams: { hd: "metalbear.co" },
+        queryParams: { hd: "metalbear.com" },
       },
     });
     setLoading(false);
@@ -46,9 +46,9 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
       async (_event, session) => {
         if (session) {
           const email = session.user.email ?? "";
-          if (!email.endsWith("@metalbear.co")) {
+          if (!email.endsWith("@metalbear.com")) {
             await supabase.auth.signOut();
-            setError("Only @metalbear.co accounts are allowed.");
+            setError("Only @metalbear.com accounts are allowed.");
             return;
           }
           onLogin();
@@ -71,7 +71,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
           {loading ? "Redirecting..." : "Sign in with Google"}
         </button>
         <p className="text-gray-500 text-xs text-center mt-3">
-          Restricted to @metalbear.co accounts
+          Restricted to @metalbear.com accounts
         </p>
       </div>
     </div>
