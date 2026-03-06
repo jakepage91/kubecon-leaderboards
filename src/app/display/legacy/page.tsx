@@ -1,16 +1,20 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { LeaderboardPanel, useLeaderboardRealtime, useLiveTimers } from "@/components/Leaderboard";
 
 export default function LegacyDisplayPage() {
   const { data, newLeaderId } = useLeaderboardRealtime(["legacy"]);
   const liveTimers = useLiveTimers();
 
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
+  const [today, setToday] = useState("");
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    }));
+  }, []);
 
   return (
     <main className="kiosk-mode h-screen w-screen flex flex-col p-6 lg:p-10 overflow-hidden select-none bg-white">
