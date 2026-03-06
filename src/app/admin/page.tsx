@@ -134,29 +134,35 @@ function EntryForm({ user }: { user: User }) {
     });
   }
 
-  // Live timer tick via requestAnimationFrame
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Live timer tick via setInterval (survives tab backgrounding)
   function startTimer() {
-    startTimeRef.current = performance.now();
+    startTimeRef.current = Date.now();
     setElapsedMs(0);
     lastBroadcastRef.current = 0;
-    const tick = () => {
-      const now = performance.now();
-      const ms = Math.floor(now - startTimeRef.current);
+
+    // RAF for smooth local display
+    const tickRaf = () => {
+      const ms = Math.floor(Date.now() - startTimeRef.current);
       setElapsedMs(ms);
-      // Broadcast every ~200ms
-      if (now - lastBroadcastRef.current >= 200) {
-        lastBroadcastRef.current = now;
-        broadcastTimer("running", ms);
-      }
-      rafRef.current = requestAnimationFrame(tick);
+      rafRef.current = requestAnimationFrame(tickRaf);
     };
-    rafRef.current = requestAnimationFrame(tick);
+    rafRef.current = requestAnimationFrame(tickRaf);
+
+    // setInterval for reliable broadcast (not throttled when tab is backgrounded)
+    intervalRef.current = setInterval(() => {
+      const ms = Math.floor(Date.now() - startTimeRef.current);
+      broadcastTimer("running", ms);
+    }, 200);
+
     setPhase("running");
   }
 
   function stopTimer() {
     cancelAnimationFrame(rafRef.current);
-    const final = Math.floor(performance.now() - startTimeRef.current);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    const final = Math.floor(Date.now() - startTimeRef.current);
     setElapsedMs(final);
     broadcastTimer("idle", final);
     setPhase("stopped");
@@ -168,6 +174,7 @@ function EntryForm({ user }: { user: User }) {
 
   function resetForm(keepPlayer = false) {
     cancelAnimationFrame(rafRef.current);
+    if (intervalRef.current) clearInterval(intervalRef.current);
     broadcastTimer("idle", 0);
     if (!keepPlayer) {
       setPlayerName("");

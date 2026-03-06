@@ -39,7 +39,6 @@ export function useLiveTimers(): Record<Route, LiveTimerState> {
     mirrord: null,
   });
   const rafRef = useRef(0);
-  const hideTimeoutsRef = useRef<Partial<Record<Route, NodeJS.Timeout>>>({});
 
   // RAF interpolation
   useEffect(() => {
@@ -77,15 +76,9 @@ export function useLiveTimers(): Record<Route, LiveTimerState> {
             ...prev,
             [route]: { ...prev[route], visible: true, playerName: payload.player_name },
           }));
-          if (hideTimeoutsRef.current[route]) clearTimeout(hideTimeoutsRef.current[route]);
-          hideTimeoutsRef.current[route] = setTimeout(() => {
-            lastBroadcastRef.current[route] = null;
-            setTimers(prev => ({ ...prev, [route]: { ...prev[route], visible: false } }));
-          }, 3000);
         } else {
           lastBroadcastRef.current[route] = null;
           setTimers(prev => ({ ...prev, [route]: { ...prev[route], visible: false } }));
-          if (hideTimeoutsRef.current[route]) clearTimeout(hideTimeoutsRef.current[route]);
         }
       })
       .subscribe();
@@ -93,7 +86,6 @@ export function useLiveTimers(): Record<Route, LiveTimerState> {
     return () => {
       supabase.removeChannel(channel);
       cancelAnimationFrame(rafRef.current);
-      Object.values(hideTimeoutsRef.current).forEach(t => t && clearTimeout(t));
     };
   }, []);
 
