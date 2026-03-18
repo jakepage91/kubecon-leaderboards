@@ -142,7 +142,7 @@ thead .sb-cell {
   padding: 3px 3px;
 }
 
-/* Compact table variant */
+/* Compact table variant (overflow column) */
 .sb-table-compact tbody .sb-cell {
   padding: 1px 3px;
   line-height: 1.3;
@@ -150,6 +150,46 @@ thead .sb-cell {
 .sb-table-compact thead .sb-cell {
   padding: 2px 2px;
   line-height: 1.2;
+}
+
+/* Primary table variant (TOP 10 — bigger rows) */
+.sb-table-primary {
+  height: 100%;
+}
+.sb-table-primary tbody .sb-cell {
+  padding: 4px 6px;
+  line-height: 1.4;
+}
+.sb-table-primary thead .sb-cell {
+  padding: 4px 4px;
+  line-height: 1.3;
+}
+
+/* ── TOP 10 frame ────────────────────────────────────── */
+.sb-top10-frame {
+  border: 3px solid rgba(255, 215, 0, 0.5);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.12);
+  padding: 2px;
+  position: relative;
+}
+.sb-top10-label {
+  text-align: center;
+  margin: -2px 0 4px;
+  position: relative;
+  z-index: 1;
+}
+.sb-top10-label span {
+  display: inline-block;
+  font-family: "Alfa Slab One", serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: #FFD700;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  border-radius: 0 0 8px 8px;
+  padding: 2px 16px 4px;
 }
 
 /* Scrollable overflow column */
@@ -223,7 +263,10 @@ tbody tr td.sb-cell:empty::after {
 @media (min-height: 900px) {
   .sb-table tbody .sb-cell { padding: 3px 5px; }
   .sb-table thead .sb-cell { padding: 4px 4px; }
+  .sb-table-primary tbody .sb-cell { padding: 5px 8px; }
+  .sb-top10-label span { font-size: 12px; padding: 3px 20px 5px; }
 }
 @media (min-height: 1000px) {
   .sb-table tbody .sb-cell { padding: 4px 6px; }
+  .sb-table-primary tbody .sb-cell { padding: 6px 10px; }
 }

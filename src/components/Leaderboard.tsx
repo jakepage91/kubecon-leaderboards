@@ -138,16 +138,20 @@ function RankCell({ run, index }: { run: Run | null; index: number }) {
 }
 
 function ScoreTable({
-  rows, startIndex, showHeader, sz, newLeaderId,
+  rows, startIndex, showHeader, sz, newLeaderId, primary = false,
 }: {
   rows: (Run | null)[];
   startIndex: number;
   showHeader: boolean;
-  sz: { head: string; cell: string; rank: string };
+  sz: { head: string; cell: string; rank: string; primaryCell?: string; primaryRank?: string };
   newLeaderId: string | null;
+  primary?: boolean;
 }) {
+  const cellSz = primary && sz.primaryCell ? sz.primaryCell : sz.cell;
+  const rankSz = primary && sz.primaryRank ? sz.primaryRank : sz.rank;
+  const tableClass = primary ? "sb-table sb-table-primary" : "sb-table sb-table-compact";
   return (
-    <table className="sb-table sb-table-compact" cellSpacing={0}>
+    <table className={tableClass} cellSpacing={0}>
       {showHeader && (
         <thead>
           <tr>
@@ -166,13 +170,13 @@ function ScoreTable({
           return (
             <tr key={run?.id ?? "empty-" + globalIndex}
               className={(globalIndex === 0 && run ? "sb-row-first" : "") + " " + (isNewLeader ? "new-leader-row" : "")}>
-              <td className={"sb-cell sb-cell-rank " + sz.rank}>
+              <td className={"sb-cell sb-cell-rank " + rankSz}>
                 <RankCell run={run} index={globalIndex} />
               </td>
-              <td className={"sb-cell sb-cell-player " + sz.cell}>{run?.player_name ?? ""}</td>
-              <td className={"sb-cell sb-cell-time " + sz.cell}>{run ? formatMs(run.elapsed_ms) : ""}</td>
-              <td className={"sb-cell sb-cell-strokes " + sz.cell}>{run ? run.strokes : ""}</td>
-              <td className={"sb-cell sb-cell-score " + sz.cell}>{run ? formatMs(run.score_ms) : ""}</td>
+              <td className={"sb-cell sb-cell-player " + cellSz}>{run?.player_name ?? ""}</td>
+              <td className={"sb-cell sb-cell-time " + cellSz}>{run ? formatMs(run.elapsed_ms) : ""}</td>
+              <td className={"sb-cell sb-cell-strokes " + cellSz}>{run ? run.strokes : ""}</td>
+              <td className={"sb-cell sb-cell-score " + cellSz}>{run ? formatMs(run.score_ms) : ""}</td>
             </tr>
           );
         })}
@@ -198,8 +202,8 @@ export function LeaderboardPanel({
   const overflowRuns = runs.slice(primaryRowCount, primaryRowCount + overflowRowCount);
 
   const sz = fullscreen
-    ? { title: "text-2xl lg:text-4xl", head: "text-[9px] lg:text-[11px]", cell: "text-[11px] lg:text-sm", rank: "text-xs lg:text-base" }
-    : { title: "text-lg lg:text-2xl", head: "text-[8px] lg:text-[10px]", cell: "text-[10px] lg:text-xs", rank: "text-[10px] lg:text-sm" };
+    ? { title: "text-2xl lg:text-4xl", head: "text-[9px] lg:text-[11px]", cell: "text-[11px] lg:text-sm", rank: "text-xs lg:text-base", primaryCell: "text-sm lg:text-lg", primaryRank: "text-base lg:text-xl" }
+    : { title: "text-lg lg:text-2xl", head: "text-[8px] lg:text-[10px]", cell: "text-[10px] lg:text-xs", rank: "text-[10px] lg:text-sm", primaryCell: "text-xs lg:text-sm", primaryRank: "text-sm lg:text-base" };
 
   return (
     <div className={"sb " + meta.colorClass + " flex-1 flex flex-col min-h-0"}>
@@ -232,10 +236,17 @@ export function LeaderboardPanel({
       )}
 
       <div className="flex gap-1 lg:gap-2 flex-1 min-h-0 relative z-[1]">
-        <div className="flex-1 min-w-0">
-          <ScoreTable rows={primaryRows} startIndex={0} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
+        {/* TOP 10 — prominent left column */}
+        <div className="flex-[3] min-w-0 flex flex-col sb-top10-frame">
+          <div className="sb-top10-label">
+            <span>TOP 10</span>
+          </div>
+          <div className="flex-1">
+            <ScoreTable rows={primaryRows} startIndex={0} showHeader={true} sz={sz} newLeaderId={newLeaderId} primary />
+          </div>
         </div>
-        <div className="flex-1 min-w-0 overflow-y-auto sb-scroll">
+        {/* Overflow — narrower right column */}
+        <div className="flex-[2] min-w-0 overflow-y-auto sb-scroll">
           {overflowRuns.length > 0 ? (
             <ScoreTable rows={overflowRuns} startIndex={primaryRowCount} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
           ) : (
