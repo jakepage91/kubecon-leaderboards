@@ -383,7 +383,19 @@ function EntryForm({ user }: { user: User }) {
             <p className="text-6xl font-bold font-mono text-emerald-400 tabular-nums">
               {formatMs(elapsedMs)}
             </p>
+            {strokes > 1 && (
+              <p className="text-gray-400 text-sm mt-2">
+                Swings: {strokes} (+{(strokes - 1) * 5}s penalty)
+              </p>
+            )}
           </div>
+
+          {/* Add Swing Button */}
+          <button type="button" onClick={() => setStrokes(Math.min(20, strokes + 1))}
+            className="w-full py-4 bg-amber-600 hover:bg-amber-500 rounded-2xl font-bold text-xl transition-colors tracking-wider flex items-center justify-center gap-2"
+            style={{ fontFamily: "'Alfa Slab One', serif" }}>
+            +1 Swing <span className="text-base font-normal opacity-80">(+5s)</span>
+          </button>
 
           {/* STOP Button */}
           <button type="button" onClick={stopTimer}

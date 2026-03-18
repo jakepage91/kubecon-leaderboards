@@ -20,13 +20,10 @@ export default function DisplayBothPage() {
     <main className="kiosk-mode h-screen w-screen flex flex-col p-4 lg:p-6 overflow-hidden select-none bg-white">
       <header className="flex items-center justify-center gap-3 lg:gap-5 mb-3 lg:mb-5 shrink-0">
         <img src="/images/Golfer.png" alt="MetalBear Golfer" className="h-14 lg:h-20 w-auto" />
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-2">
-            <img src="/images/golf-ball.png" alt="" className="h-4 lg:h-5 w-auto opacity-60" />
-            <h1 className="page-title lg:text-5xl text-3xl">KubeCon Mini Golf</h1>
-            <img src="/images/club.png" alt="" className="h-5 lg:h-7 w-auto opacity-60" />
-          </div>
-          <p className="text-gray-400 text-xs lg:text-sm mt-1 vintage-footer">{today}</p>
+        <div className="flex items-center gap-2">
+          <img src="/images/golf-ball.png" alt="" className="h-4 lg:h-5 w-auto opacity-60" />
+          <p className="text-gray-400 text-xs lg:text-sm vintage-footer">{today}</p>
+          <img src="/images/club.png" alt="" className="h-5 lg:h-7 w-auto opacity-60" />
         </div>
         <img src="/images/Golfer.png" alt="" className="h-14 lg:h-20 w-auto -scale-x-100" />
       </header>

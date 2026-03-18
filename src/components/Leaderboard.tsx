@@ -11,7 +11,8 @@ const ROUTE_META: Record<Route, { label: string; colorClass: string }> = {
   mirrord: { label: "mirrord Fast Lane", colorClass: "scoreboard-mirrord" },
 };
 
-const PRIMARY_ROWS = 15;
+const DEFAULT_PRIMARY_ROWS = 10;
+const DEFAULT_OVERFLOW_ROWS = 15;
 
 // ── Live timer types ──────────────────────────────────────
 interface TimerPayload {
@@ -182,16 +183,19 @@ function ScoreTable({
 
 export function LeaderboardPanel({
   route, runs, newLeaderId, liveTimer, fullscreen = false,
+  primaryRowCount = DEFAULT_PRIMARY_ROWS, overflowRowCount = DEFAULT_OVERFLOW_ROWS,
 }: {
   route: Route;
   runs: Run[];
   newLeaderId: string | null;
   liveTimer?: LiveTimerState;
   fullscreen?: boolean;
+  primaryRowCount?: number;
+  overflowRowCount?: number;
 }) {
   const meta = ROUTE_META[route];
-  const primaryRows = padRows(runs.slice(0, PRIMARY_ROWS), PRIMARY_ROWS);
-  const overflowRuns = runs.slice(PRIMARY_ROWS);
+  const primaryRows = padRows(runs.slice(0, primaryRowCount), primaryRowCount);
+  const overflowRuns = runs.slice(primaryRowCount, primaryRowCount + overflowRowCount);
 
   const sz = fullscreen
     ? { title: "text-2xl lg:text-4xl", head: "text-[9px] lg:text-[11px]", cell: "text-[11px] lg:text-sm", rank: "text-xs lg:text-base" }
@@ -233,9 +237,9 @@ export function LeaderboardPanel({
         </div>
         <div className="flex-1 min-w-0 overflow-y-auto sb-scroll">
           {overflowRuns.length > 0 ? (
-            <ScoreTable rows={overflowRuns} startIndex={PRIMARY_ROWS} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
+            <ScoreTable rows={overflowRuns} startIndex={primaryRowCount} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
           ) : (
-            <ScoreTable rows={padRows([], PRIMARY_ROWS)} startIndex={PRIMARY_ROWS} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
+            <ScoreTable rows={padRows([], overflowRowCount)} startIndex={primaryRowCount} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
           )}
         </div>
       </div>
