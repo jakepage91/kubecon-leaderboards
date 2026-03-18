@@ -143,6 +143,9 @@ thead .sb-cell {
 }
 
 /* Compact table variant (overflow column) */
+.sb-table-compact {
+  height: 100%;
+}
 .sb-table-compact tbody .sb-cell {
   padding: 1px 3px;
   line-height: 1.3;
@@ -221,12 +224,18 @@ tbody .sb-cell-rank {
   font-family: "Alfa Slab One", serif;
 }
 
-/* #1 row highlight */
+/* #1 row highlight — golden rim + bigger text */
 .sb-row-first {
-  background: rgba(255, 215, 0, 0.12) !important;
+  background: rgba(255, 215, 0, 0.15) !important;
+  outline: 2px solid rgba(255, 215, 0, 0.6);
+  outline-offset: -1px;
+  box-shadow: inset 0 0 12px rgba(255, 215, 0, 0.15), 0 0 8px rgba(255, 215, 0, 0.2);
 }
 .sb-row-first .sb-cell {
   color: #FFD700;
+  font-size: 115%;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 /* Empty row cells — just show the grid */

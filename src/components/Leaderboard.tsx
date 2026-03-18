@@ -12,7 +12,7 @@ const ROUTE_META: Record<Route, { label: string; colorClass: string }> = {
 };
 
 const DEFAULT_PRIMARY_ROWS = 10;
-const DEFAULT_OVERFLOW_ROWS = 15;
+const DEFAULT_OVERFLOW_ROWS = 25;
 
 // ── Live timer types ──────────────────────────────────────
 interface TimerPayload {
@@ -207,13 +207,18 @@ export function LeaderboardPanel({
 
   return (
     <div className={"sb " + meta.colorClass + " flex-1 flex flex-col min-h-0"}>
-      <div className="sb-badge">
-        <div className="sb-badge-inner">
-          <span className={sz.head}>LEADERBOARD</span>
+      <div className="flex items-center justify-center gap-2 mb-1 relative z-[1]">
+        <img src="/images/Golfer.png" alt="" className="h-10 lg:h-14 w-auto" />
+        <div className="text-center">
+          <div className="sb-badge">
+            <div className="sb-badge-inner">
+              <span className={sz.head}>LEADERBOARD</span>
+            </div>
+          </div>
+          <h2 className={"sb-title " + sz.title + " !mb-0"}>{meta.label}</h2>
         </div>
+        <img src="/images/Golfer.png" alt="" className="h-10 lg:h-14 w-auto -scale-x-100" />
       </div>
-
-      <h2 className={"sb-title " + sz.title}>{meta.label}</h2>
 
       {/* NOW PLAYING strip */}
       {liveTimer?.visible && (
@@ -245,13 +250,11 @@ export function LeaderboardPanel({
             <ScoreTable rows={primaryRows} startIndex={0} showHeader={true} sz={sz} newLeaderId={newLeaderId} primary />
           </div>
         </div>
-        {/* Overflow — narrower right column */}
-        <div className="flex-[2] min-w-0 overflow-y-auto sb-scroll">
-          {overflowRuns.length > 0 ? (
-            <ScoreTable rows={overflowRuns} startIndex={primaryRowCount} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
-          ) : (
-            <ScoreTable rows={padRows([], overflowRowCount)} startIndex={primaryRowCount} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
-          )}
+        {/* Overflow — narrower right column, fills to bottom */}
+        <div className="flex-[2] min-w-0 overflow-y-auto sb-scroll flex flex-col">
+          <div className="flex-1">
+            <ScoreTable rows={padRows(overflowRuns, overflowRowCount)} startIndex={primaryRowCount} showHeader={true} sz={sz} newLeaderId={newLeaderId} />
+          </div>
         </div>
       </div>
     </div>

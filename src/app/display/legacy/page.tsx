@@ -1,32 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { LeaderboardPanel, useLeaderboardRealtime, useLiveTimers } from "@/components/Leaderboard";
 
 export default function LegacyDisplayPage() {
   const { data, newLeaderId } = useLeaderboardRealtime(["legacy"]);
   const liveTimers = useLiveTimers();
 
-  const [today, setToday] = useState("");
-  useEffect(() => {
-    setToday(new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    }));
-  }, []);
-
   return (
     <main className="kiosk-mode h-screen w-screen flex flex-col p-6 lg:p-10 overflow-hidden select-none bg-white">
-      <header className="flex items-center justify-center gap-4 lg:gap-6 mb-4 lg:mb-6 shrink-0">
-        <img src="/images/Golfer.png" alt="MetalBear Golfer" className="h-16 lg:h-24 w-auto" />
-        <div className="flex items-center gap-2">
-          <img src="/images/golf-ball.png" alt="" className="h-5 lg:h-6 w-auto opacity-60" />
-          <p className="text-gray-400 text-sm lg:text-base vintage-footer">{today}</p>
-          <img src="/images/club.png" alt="" className="h-6 lg:h-8 w-auto opacity-60" />
-        </div>
-      </header>
-
       <div className="flex-1 min-h-0 flex">
         <LeaderboardPanel route="legacy" runs={data.legacy} newLeaderId={newLeaderId} liveTimer={liveTimers.legacy} fullscreen />
       </div>
