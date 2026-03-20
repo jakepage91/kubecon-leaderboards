@@ -64,13 +64,13 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
         <div className="flex justify-center mb-4">
           <img src="/images/Golfer.png" alt="MetalBear Golfer" className="h-20 w-auto" />
         </div>
-        <h1 className="text-2xl font-bold text-center mb-6">Staff Login</h1>
-        {error && <p className="text-red-400 text-sm text-center mb-4">{error}</p>}
+        <h1 className="text-2xl font-bold text-center mb-6 text-white">Staff Login</h1>
+        {error && <p className="text-red-200 text-sm text-center mb-4">{error}</p>}
         <button onClick={handleGoogleLogin} disabled={loading}
-          className="w-full py-2.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 rounded-lg font-semibold transition-colors">
+          className="w-full py-2.5 bg-white hover:bg-gray-100 text-[#5B6AC9] disabled:opacity-50 rounded-lg font-semibold transition-colors">
           {loading ? "Redirecting..." : "Sign in with Google"}
         </button>
-        <p className="text-gray-500 text-xs text-center mt-3">
+        <p className="text-white/60 text-xs text-center mt-3">
           Restricted to @metalbear.com accounts
         </p>
       </div>
