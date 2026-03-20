@@ -60,7 +60,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6">
+      <div className="w-full max-w-sm bg-[#5B6AC9] border border-[#7B8AD9] rounded-2xl p-6">
         <div className="flex justify-center mb-4">
           <img src="/images/Golfer.png" alt="MetalBear Golfer" className="h-20 w-auto" />
         </div>
@@ -79,7 +79,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 }
 
 // ─── Timer-based Entry Flow ──────────────────────────────────
-type Phase = "setup" | "running" | "stopped" | "strokes";
+type Phase = "setup" | "running" | "stopped";
 
 // ─── CSV Backup Helper ──────────────────────────────────────
 function downloadCsv(rows: Record<string, unknown>[], filename: string) {
@@ -166,10 +166,6 @@ function EntryForm({ user }: { user: User }) {
     setElapsedMs(final);
     broadcastTimer("idle", final);
     setPhase("stopped");
-  }
-
-  function proceedToStrokes() {
-    setPhase("strokes");
   }
 
   function resetForm(keepPlayer = false) {
@@ -422,50 +418,8 @@ function EntryForm({ user }: { user: User }) {
             <p className="text-5xl font-bold font-mono text-yellow-400 tabular-nums">
               {formatMs(elapsedMs)}
             </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 w-full">
-            <button type="button" onClick={proceedToStrokes}
-              className="py-4 bg-violet-600 hover:bg-violet-500 rounded-xl font-bold text-lg transition-colors"
-              style={{ fontFamily: "'Alfa Slab One', serif" }}>
-              Next: Swings
-            </button>
-            <button type="button" onClick={() => resetForm()}
-              className="py-4 bg-gray-700 hover:bg-gray-600 rounded-xl font-bold text-lg transition-colors">
-              Redo
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── PHASE: STROKES ── */}
-      {phase === "strokes" && (
-        <div className="flex flex-col items-center gap-5 pt-4">
-          <p className="text-gray-400 text-sm">
-            <span className="text-white font-bold">{playerName}</span> — {formatMs(elapsedMs)}
-          </p>
-
-          {/* Stroke counter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3 text-center"
-              style={{ fontFamily: "'Alfa Slab One', serif", letterSpacing: "0.05em" }}>
-              SWINGS (1–20)
-            </label>
-            <div className="flex items-center gap-4">
-              <button type="button" onClick={() => setStrokes(Math.max(1, strokes - 1))}
-                className="w-16 h-16 rounded-xl bg-gray-700 hover:bg-gray-600 text-2xl font-bold transition-colors">
-                −
-              </button>
-              <div className="w-24 h-16 bg-gray-900 border-2 border-gray-600 rounded-xl flex items-center justify-center">
-                <span className="text-4xl font-bold font-mono text-white">{strokes}</span>
-              </div>
-              <button type="button" onClick={() => setStrokes(Math.min(20, strokes + 1))}
-                className="w-16 h-16 rounded-xl bg-gray-700 hover:bg-gray-600 text-2xl font-bold transition-colors">
-                +
-              </button>
-            </div>
-            <p className="text-xs text-gray-500 mt-2 text-center">
-              Penalty: +{strokes * 5}s &bull; Est. score: {formatMs(elapsedMs + strokes * 5000)}
+            <p className="text-gray-400 text-sm mt-2">
+              Swings: {strokes} &bull; Penalty: +{strokes * 5}s &bull; Score: {formatMs(elapsedMs + strokes * 5000)}
             </p>
           </div>
 
@@ -476,9 +430,9 @@ function EntryForm({ user }: { user: User }) {
             {submitting ? "Saving..." : "Submit Score"}
           </button>
 
-          <button type="button" onClick={() => setPhase("stopped")}
+          <button type="button" onClick={() => resetForm()}
             className="text-gray-500 text-sm hover:text-white transition-colors">
-            Back
+            Redo
           </button>
         </div>
       )}
