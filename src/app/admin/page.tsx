@@ -418,8 +418,29 @@ function EntryForm({ user }: { user: User }) {
             <p className="text-5xl font-bold font-mono text-yellow-400 tabular-nums">
               {formatMs(elapsedMs)}
             </p>
-            <p className="text-gray-400 text-sm mt-2">
-              Swings: {strokes} &bull; Penalty: +{strokes * 5}s &bull; Score: {formatMs(elapsedMs + strokes * 5000)}
+          </div>
+
+          {/* Adjust swings */}
+          <div className="w-full">
+            <label className="block text-sm font-medium text-gray-300 mb-2 text-center"
+              style={{ fontFamily: "'Alfa Slab One', serif", letterSpacing: "0.05em" }}>
+              SWINGS
+            </label>
+            <div className="flex items-center justify-center gap-4">
+              <button type="button" onClick={() => setStrokes(Math.max(1, strokes - 1))}
+                className="w-14 h-14 rounded-xl bg-gray-700 hover:bg-gray-600 text-2xl font-bold transition-colors">
+                −
+              </button>
+              <div className="w-20 h-14 bg-gray-900 border-2 border-gray-600 rounded-xl flex items-center justify-center">
+                <span className="text-3xl font-bold font-mono text-white">{strokes}</span>
+              </div>
+              <button type="button" onClick={() => setStrokes(Math.min(20, strokes + 1))}
+                className="w-14 h-14 rounded-xl bg-gray-700 hover:bg-gray-600 text-2xl font-bold transition-colors">
+                +
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              Penalty: +{strokes * 5}s &bull; Score: {formatMs(elapsedMs + strokes * 5000)}
             </p>
           </div>
 
