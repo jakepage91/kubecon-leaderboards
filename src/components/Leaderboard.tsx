@@ -202,8 +202,8 @@ export function LeaderboardPanel({
   const overflowRuns = runs.slice(primaryRowCount, primaryRowCount + overflowRowCount);
 
   const sz = fullscreen
-    ? { title: "text-2xl lg:text-4xl", head: "text-[9px] lg:text-[11px]", cell: "text-[11px] lg:text-sm", rank: "text-xs lg:text-base", primaryCell: "text-sm lg:text-lg", primaryRank: "text-base lg:text-xl" }
-    : { title: "text-lg lg:text-2xl", head: "text-[8px] lg:text-[10px]", cell: "text-[10px] lg:text-xs", rank: "text-[10px] lg:text-sm", primaryCell: "text-xs lg:text-sm", primaryRank: "text-sm lg:text-base" };
+    ? { title: "text-3xl lg:text-5xl", head: "text-[11px] lg:text-sm", cell: "text-3xl lg:text-5xl", rank: "text-3xl lg:text-5xl", primaryCell: "text-4xl lg:text-6xl", primaryRank: "text-4xl lg:text-6xl" }
+    : { title: "text-xl lg:text-3xl", head: "text-[9px] lg:text-xs", cell: "text-xl lg:text-3xl", rank: "text-xl lg:text-3xl", primaryCell: "text-2xl lg:text-4xl", primaryRank: "text-2xl lg:text-4xl" };
 
   return (
     <div className={"sb " + meta.colorClass + " flex-1 flex flex-col min-h-0"}>

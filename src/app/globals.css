@@ -7,8 +7,8 @@
   --color-legacy: #C94E4E;
   --color-mirrord: #5B6AC9;
   --color-purple: #2D1B4E;
-  --border-w: 3px;
-  --border-color: rgba(255, 255, 255, 0.4);
+  --border-w: 4px;
+  --border-color: rgba(255, 255, 255, 0.6);
 }
 
 body {
@@ -35,7 +35,7 @@ body {
 /* Outer frame — solid color, thick white border, inner double-line */
 .sb {
   position: relative;
-  border: 5px solid rgba(255, 255, 255, 0.5);
+  border: 6px solid rgba(255, 255, 255, 0.7);
   border-radius: 14px;
   padding: 10px;
 }
@@ -99,7 +99,7 @@ body {
 
 /* Every cell gets a visible border box */
 .sb-cell {
-  border: 2px solid rgba(255, 255, 255, 0.25);
+  border: 3px solid rgba(255, 255, 255, 0.4);
   text-align: center;
   vertical-align: middle;
   color: white;
@@ -170,7 +170,7 @@ thead .sb-cell {
 
 /* ── TOP 10 frame ────────────────────────────────────── */
 .sb-top10-frame {
-  border: 3px solid rgba(255, 215, 0, 0.5);
+  border: 5px solid #FFD700;
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.12);
   padding: 2px;
@@ -185,14 +185,14 @@ thead .sb-cell {
 .sb-top10-label span {
   display: inline-block;
   font-family: "Alfa Slab One", serif;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.15em;
   color: #FFD700;
   text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
   background: rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(255, 215, 0, 0.4);
+  border: 3px solid #FFD700;
   border-radius: 0 0 8px 8px;
-  padding: 2px 16px 4px;
+  padding: 3px 18px 5px;
 }
 
 /* Scrollable overflow column */
@@ -226,14 +226,13 @@ tbody .sb-cell-rank {
 
 /* #1 row highlight — golden rim + bigger text */
 .sb-row-first {
-  background: rgba(255, 215, 0, 0.15) !important;
-  outline: 2px solid rgba(255, 215, 0, 0.6);
+  background: rgba(255, 215, 0, 0.2) !important;
+  outline: 3px solid #FFD700;
   outline-offset: -1px;
-  box-shadow: inset 0 0 12px rgba(255, 215, 0, 0.15), 0 0 8px rgba(255, 215, 0, 0.2);
+  box-shadow: inset 0 0 12px rgba(255, 215, 0, 0.2), 0 0 8px rgba(255, 215, 0, 0.3);
 }
 .sb-row-first .sb-cell {
   color: #FFD700;
-  font-size: 115%;
   padding-top: 4px;
   padding-bottom: 4px;
 }
@@ -273,7 +272,7 @@ tbody tr td.sb-cell:empty::after {
   .sb-table tbody .sb-cell { padding: 3px 5px; }
   .sb-table thead .sb-cell { padding: 4px 4px; }
   .sb-table-primary tbody .sb-cell { padding: 5px 8px; }
-  .sb-top10-label span { font-size: 12px; padding: 3px 20px 5px; }
+  .sb-top10-label span { font-size: 14px; padding: 4px 22px 6px; }
 }
 @media (min-height: 1000px) {
   .sb-table tbody .sb-cell { padding: 4px 6px; }

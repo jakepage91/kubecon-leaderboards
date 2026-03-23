@@ -17,7 +17,9 @@ CREATE TABLE runs (
   ) STORED,
   archived    boolean     NOT NULL DEFAULT false,
   created_at  timestamptz NOT NULL DEFAULT now(),
-  created_by  uuid        REFERENCES auth.users(id)
+  created_by  uuid        REFERENCES auth.users(id),
+  modified_at timestamptz,
+  modified_by uuid        REFERENCES auth.users(id)
 );
 
 -- Index for the leaderboard query (today + active + route, ordered by score)

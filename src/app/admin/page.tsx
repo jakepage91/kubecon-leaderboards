@@ -228,10 +228,9 @@ function EntryForm({ user }: { user: User }) {
 
   async function handleResetDay() {
     setShowResetConfirm(false);
-    const today = new Date().toISOString().slice(0, 10);
     const { error } = await supabase
       .from("runs").update({ archived: true })
-      .eq("event_day", today).eq("archived", false);
+      .eq("archived", false);
     if (error) setToast({ message: `Reset failed: ${error.message}`, type: "error" });
     else setToast({ message: "Leaderboard reset!", type: "success" });
   }
@@ -279,10 +278,10 @@ function EntryForm({ user }: { user: User }) {
               </h2>
             </div>
             <p className="text-center text-gray-300 mb-2">
-              Do you really want to clear today&apos;s leaderboard?
+              Do you really want to clear the entire leaderboard?
             </p>
             <p className="text-center text-gray-500 text-xs mb-6">
-              All runs will be archived. This cannot be undone from the admin panel.
+              All runs (all days) will be archived. This cannot be undone from the admin panel.
             </p>
             <div className="grid grid-cols-2 gap-3">
               <button onClick={() => setShowResetConfirm(false)}
@@ -471,7 +470,7 @@ function EntryForm({ user }: { user: User }) {
             </button>
             <button onClick={() => setShowResetConfirm(true)}
               className="flex-1 py-2.5 bg-gray-800 hover:bg-red-900/50 border border-red-800/50 rounded-xl font-semibold text-red-400 transition-colors text-sm">
-              Reset Day
+              Reset Leaderboard
             </button>
           </div>
         </div>
