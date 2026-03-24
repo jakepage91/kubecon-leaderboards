@@ -1,6 +1,7 @@
 "use client";
 
 import { LeaderboardPanel, useLeaderboardRealtime, useLiveTimers } from "@/components/Leaderboard";
+import { FullscreenButton } from "@/components/FullscreenButton";
 
 export default function DisplayBothPage() {
   const { data, newLeaderId } = useLeaderboardRealtime(["legacy", "mirrord"]);
@@ -8,6 +9,7 @@ export default function DisplayBothPage() {
 
   return (
     <main className="kiosk-mode h-screen w-screen flex flex-col p-4 lg:p-6 overflow-hidden select-none bg-white">
+      <FullscreenButton />
       <div className="flex-1 flex gap-4 lg:gap-6 min-h-0">
         <LeaderboardPanel route="legacy" runs={data.legacy} newLeaderId={newLeaderId} liveTimer={liveTimers.legacy} />
         <LeaderboardPanel route="mirrord" runs={data.mirrord} newLeaderId={newLeaderId} liveTimer={liveTimers.mirrord} />

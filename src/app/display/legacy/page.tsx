@@ -1,6 +1,7 @@
 "use client";
 
 import { LeaderboardPanel, useLeaderboardRealtime, useLiveTimers } from "@/components/Leaderboard";
+import { FullscreenButton } from "@/components/FullscreenButton";
 
 export default function LegacyDisplayPage() {
   const { data, newLeaderId } = useLeaderboardRealtime(["legacy"]);
@@ -8,6 +9,7 @@ export default function LegacyDisplayPage() {
 
   return (
     <main className="kiosk-mode h-screen w-screen flex flex-col p-6 lg:p-10 overflow-hidden select-none bg-white">
+      <FullscreenButton />
       <div className="flex-1 min-h-0 flex">
         <LeaderboardPanel route="legacy" runs={data.legacy} newLeaderId={newLeaderId} liveTimer={liveTimers.legacy} fullscreen />
       </div>

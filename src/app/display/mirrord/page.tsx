@@ -1,6 +1,7 @@
 "use client";
 
 import { LeaderboardPanel, useLeaderboardRealtime, useLiveTimers } from "@/components/Leaderboard";
+import { FullscreenButton } from "@/components/FullscreenButton";
 
 export default function MirrordDisplayPage() {
   const { data, newLeaderId } = useLeaderboardRealtime(["mirrord"]);
@@ -8,6 +9,7 @@ export default function MirrordDisplayPage() {
 
   return (
     <main className="kiosk-mode h-screen w-screen flex flex-col p-6 lg:p-10 overflow-hidden select-none bg-white">
+      <FullscreenButton />
       <div className="flex-1 min-h-0 flex">
         <LeaderboardPanel route="mirrord" runs={data.mirrord} newLeaderId={newLeaderId} liveTimer={liveTimers.mirrord} fullscreen />
       </div>

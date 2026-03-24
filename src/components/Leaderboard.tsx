@@ -202,8 +202,8 @@ export function LeaderboardPanel({
   const overflowRuns = runs.slice(primaryRowCount, primaryRowCount + overflowRowCount);
 
   const sz = fullscreen
-    ? { title: "text-3xl lg:text-5xl", head: "text-[11px] lg:text-sm", cell: "text-3xl lg:text-5xl", rank: "text-3xl lg:text-5xl", primaryCell: "text-4xl lg:text-6xl", primaryRank: "text-4xl lg:text-6xl" }
-    : { title: "text-xl lg:text-3xl", head: "text-[9px] lg:text-xs", cell: "text-xl lg:text-3xl", rank: "text-xl lg:text-3xl", primaryCell: "text-2xl lg:text-4xl", primaryRank: "text-2xl lg:text-4xl" };
+    ? { title: "text-3xl lg:text-5xl", head: "text-[11px] lg:text-sm", cell: "text-xl lg:text-[1.7rem]", rank: "text-lg lg:text-2xl", primaryCell: "text-2xl lg:text-[2rem]", primaryRank: "text-xl lg:text-[1.7rem]" }
+    : { title: "text-3xl lg:text-3xl", head: "text-[9px] lg:text-xs", cell: "text-lg lg:text-xl", rank: "text-base lg:text-lg", primaryCell: "text-xl lg:text-2xl", primaryRank: "text-lg lg:text-xl" };
 
   return (
     <div className={"sb " + meta.colorClass + " flex-1 flex flex-col min-h-0"}>
@@ -222,19 +222,19 @@ export function LeaderboardPanel({
 
       {/* NOW PLAYING strip */}
       {liveTimer?.visible && (
-        <div className="relative z-[1] mx-1 mb-2 flex items-center gap-3 bg-black/30 border border-white/25 rounded-lg px-3 py-2">
+        <div className="relative z-[1] mx-1 mb-2 flex items-center gap-4 bg-black/30 border-2 border-white/25 rounded-lg px-4 py-3">
           <div className="flex-1 min-w-0">
-            <p className="text-white/60 uppercase tracking-widest leading-none mb-0.5"
-              style={{ fontFamily: "'Alfa Slab One', serif", fontSize: "clamp(7px, 1vw, 10px)" }}>
+            <p className="text-white/60 uppercase tracking-widest leading-none mb-1"
+              style={{ fontFamily: "'Alfa Slab One', serif", fontSize: "clamp(10px, 1.5vw, 16px)" }}>
               ▶ Now Playing
             </p>
             <p className="text-white font-bold truncate"
-              style={{ fontFamily: "'Oswald', sans-serif", fontSize: "clamp(12px, 2vw, 18px)" }}>
+              style={{ fontFamily: "'Oswald', sans-serif", fontSize: "clamp(20px, 3.5vw, 36px)" }}>
               {liveTimer.playerName}
             </p>
           </div>
           <p className="text-emerald-400 font-mono font-bold tabular-nums shrink-0"
-            style={{ fontSize: "clamp(18px, 3vw, 30px)" }}>
+            style={{ fontSize: "clamp(28px, 5vw, 52px)" }}>
             {formatMs(liveTimer.displayMs)}
           </p>
         </div>
