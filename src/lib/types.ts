@@ -7,7 +7,6 @@ export interface Run {
   player_name: string;
   email: string | null;
   elapsed_ms: number;
-  strokes: number;
   score_ms: number;
   archived: boolean;
   created_at: string;

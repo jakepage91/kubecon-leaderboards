@@ -128,11 +128,10 @@ tbody tr:nth-child(even) {
 }
 
 /* Column widths */
-.sb-cell-rank    { width: 12%; }
-.sb-cell-player  { width: 30%; text-align: left; padding-left: 10px; }
-.sb-cell-time    { width: 22%; }
-.sb-cell-strokes { width: 14%; }
-.sb-cell-score   { width: 22%; }
+.sb-cell-rank    { width: 10%; }
+.sb-cell-player  { width: 36%; text-align: left; padding-left: 10px; }
+.sb-cell-time    { width: 27%; }
+.sb-cell-score   { width: 27%; }
 
 /* Body cell padding */
 tbody .sb-cell {

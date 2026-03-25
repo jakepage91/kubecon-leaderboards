@@ -17,7 +17,7 @@ export default function DisplayBothPage() {
 
       <footer className="flex items-center justify-center gap-3 mt-2 lg:mt-3 shrink-0">
         <p className="text-gray-300 text-[10px] lg:text-xs vintage-footer">
-          Score = Time + 5s per stroke
+          Score = Fastest Time
         </p>
         <span className="text-gray-300 text-[10px] lg:text-xs">&bull;</span>
         <span className="text-gray-400 text-[10px] lg:text-xs vintage-footer">Powered by</span>

@@ -22,7 +22,6 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
   const [editMinutes, setEditMinutes] = useState(0);
   const [editSeconds, setEditSeconds] = useState(0);
   const [editMillis, setEditMillis] = useState(0);
-  const [editStrokes, setEditStrokes] = useState(1);
   const [editRoute, setEditRoute] = useState<Route>("legacy");
   const [editSaving, setEditSaving] = useState(false);
 
@@ -67,7 +66,6 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
     setEditMinutes(Math.floor(totalSeconds / 60));
     setEditSeconds(totalSeconds % 60);
     setEditMillis(run.elapsed_ms % 1000);
-    setEditStrokes(run.strokes);
     setEditRoute(run.route);
   }
 
@@ -78,15 +76,12 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
 
     if (!editName.trim()) { onToast("Player name required", "error"); return; }
     if (newElapsedMs <= 0 || newElapsedMs > 240000) { onToast("Time must be 0–4:00.000", "error"); return; }
-    if (editStrokes < 1 || editStrokes > 20) { onToast("Strokes must be 1–20", "error"); return; }
-
     setEditSaving(true);
     const { error } = await supabase
       .from("runs")
       .update({
         player_name: editName.trim(),
         elapsed_ms: newElapsedMs,
-        strokes: editStrokes,
         route: editRoute,
         modified_by: userId,
         modified_at: new Date().toISOString(),
@@ -163,7 +158,6 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
                 <th className="py-2 px-2 text-left">Player</th>
                 <th className="py-2 px-2 text-center">Route</th>
                 <th className="py-2 px-2 text-right">Time</th>
-                <th className="py-2 px-2 text-right">SW</th>
                 <th className="py-2 px-2 text-right">Score</th>
                 <th className="py-2 px-2 text-right"></th>
               </tr>
@@ -181,7 +175,6 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
                     </span>
                   </td>
                   <td className="py-2 px-2 text-right font-mono text-gray-700">{formatMs(run.elapsed_ms)}</td>
-                  <td className="py-2 px-2 text-right text-gray-700">{run.strokes}</td>
                   <td className="py-2 px-2 text-right font-mono text-gray-700">{formatMs(run.score_ms)}</td>
                   <td className="py-2 px-2 text-right whitespace-nowrap">
                     <button onClick={() => openEdit(run)}
@@ -234,22 +227,6 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
                   className="w-16 px-2 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white text-center focus:outline-none focus:ring-2 focus:ring-cyan-500" />
               </div>
               <p className="text-[10px] text-gray-500 mt-1">min : sec . ms</p>
-            </div>
-
-            {/* Strokes */}
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">Swings</label>
-              <div className="flex items-center gap-3">
-                <button type="button" onClick={() => setEditStrokes(Math.max(1, editStrokes - 1))}
-                  className="w-10 h-10 rounded-lg bg-gray-700 hover:bg-gray-600 text-lg font-bold transition-colors">
-                  −
-                </button>
-                <span className="text-2xl font-bold font-mono w-8 text-center text-white">{editStrokes}</span>
-                <button type="button" onClick={() => setEditStrokes(Math.min(20, editStrokes + 1))}
-                  className="w-10 h-10 rounded-lg bg-gray-700 hover:bg-gray-600 text-lg font-bold transition-colors">
-                  +
-                </button>
-              </div>
             </div>
 
             {/* Route */}

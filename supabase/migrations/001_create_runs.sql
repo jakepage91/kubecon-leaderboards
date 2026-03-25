@@ -10,10 +10,9 @@ CREATE TABLE runs (
   player_name text        NOT NULL CHECK (char_length(player_name) > 0),
   email       text,
   elapsed_ms  integer     NOT NULL CHECK (elapsed_ms > 0 AND elapsed_ms <= 240000),
-  strokes     integer     NOT NULL CHECK (strokes >= 1 AND strokes <= 20),
-  -- Computed score: elapsed time + 5s penalty per stroke + deterministic sub-second tiebreaker
+  -- Computed score: elapsed time + deterministic sub-ms tiebreaker
   score_ms    bigint      GENERATED ALWAYS AS (
-    elapsed_ms::bigint + strokes::bigint * 5000 + (abs(hashtext(id::text)) % 1000)
+    elapsed_ms::bigint + (abs(hashtext(id::text)) % 1000)
   ) STORED,
   archived    boolean     NOT NULL DEFAULT false,
   created_at  timestamptz NOT NULL DEFAULT now(),

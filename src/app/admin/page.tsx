@@ -109,7 +109,6 @@ function EntryForm({ user }: { user: User }) {
   const [email, setEmail] = useState("");
   const [phase, setPhase] = useState<Phase>("setup");
   const [elapsedMs, setElapsedMs] = useState(0);
-  const [strokes, setStrokes] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -179,7 +178,6 @@ function EntryForm({ user }: { user: User }) {
       setLegacyDone(false);
     }
     setElapsedMs(0);
-    setStrokes(1);
     setPhase("setup");
   }
 
@@ -192,18 +190,12 @@ function EntryForm({ user }: { user: User }) {
       setToast({ message: "Time must be between 0 and 4:00.000", type: "error" });
       return;
     }
-    if (strokes < 1 || strokes > 20) {
-      setToast({ message: "Strokes must be 1-20", type: "error" });
-      return;
-    }
-
     setSubmitting(true);
     const { error } = await supabase.from("runs").insert({
       route,
       player_name: playerName.trim(),
       email: email.trim() || null,
       elapsed_ms: elapsedMs,
-      strokes,
       created_by: user.id,
     });
     setSubmitting(false);
@@ -216,7 +208,6 @@ function EntryForm({ user }: { user: User }) {
       setLegacyDone(true);
       setRoute("mirrord");
       setElapsedMs(0);
-      setStrokes(1);
       cancelAnimationFrame(rafRef.current);
       setPhase("setup");
     } else {
@@ -378,19 +369,7 @@ function EntryForm({ user }: { user: User }) {
             <p className="text-6xl font-bold font-mono text-emerald-400 tabular-nums">
               {formatMs(elapsedMs)}
             </p>
-            {strokes > 1 && (
-              <p className="text-gray-400 text-sm mt-2">
-                Swings: {strokes} (+{(strokes - 1) * 5}s penalty)
-              </p>
-            )}
           </div>
-
-          {/* Add Swing Button */}
-          <button type="button" onClick={() => setStrokes(Math.min(20, strokes + 1))}
-            className="w-full py-4 bg-amber-600 hover:bg-amber-500 rounded-2xl font-bold text-xl transition-colors tracking-wider flex items-center justify-center gap-2"
-            style={{ fontFamily: "'Alfa Slab One', serif" }}>
-            +1 Swing <span className="text-base font-normal opacity-80">(+5s)</span>
-          </button>
 
           {/* STOP Button */}
           <button type="button" onClick={stopTimer}
@@ -419,30 +398,6 @@ function EntryForm({ user }: { user: User }) {
             </p>
           </div>
 
-          {/* Adjust swings */}
-          <div className="w-full">
-            <label className="block text-sm font-medium text-gray-300 mb-2 text-center"
-              style={{ fontFamily: "'Alfa Slab One', serif", letterSpacing: "0.05em" }}>
-              SWINGS
-            </label>
-            <div className="flex items-center justify-center gap-4">
-              <button type="button" onClick={() => setStrokes(Math.max(1, strokes - 1))}
-                className="w-14 h-14 rounded-xl bg-gray-700 hover:bg-gray-600 text-2xl font-bold transition-colors">
-                −
-              </button>
-              <div className="w-20 h-14 bg-gray-900 border-2 border-gray-600 rounded-xl flex items-center justify-center">
-                <span className="text-3xl font-bold font-mono text-white">{strokes}</span>
-              </div>
-              <button type="button" onClick={() => setStrokes(Math.min(20, strokes + 1))}
-                className="w-14 h-14 rounded-xl bg-gray-700 hover:bg-gray-600 text-2xl font-bold transition-colors">
-                +
-              </button>
-            </div>
-            <p className="text-xs text-gray-500 mt-2 text-center">
-              Penalty: +{strokes * 5}s &bull; Score: {formatMs(elapsedMs + strokes * 5000)}
-            </p>
-          </div>
-
           {/* Submit */}
           <button type="button" onClick={handleSubmit} disabled={submitting}
             className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 rounded-2xl font-black text-2xl transition-colors tracking-wider"
@@ -450,10 +405,16 @@ function EntryForm({ user }: { user: User }) {
             {submitting ? "Saving..." : "Submit Score"}
           </button>
 
-          <button type="button" onClick={() => resetForm()}
-            className="text-gray-500 text-sm hover:text-white transition-colors">
-            Redo
-          </button>
+          <div className="flex w-full gap-3">
+            <button type="button" onClick={() => resetForm()}
+              className="flex-1 text-gray-500 text-sm hover:text-white transition-colors">
+              Redo
+            </button>
+            <button type="button" onClick={() => { setToast({ message: `${playerName.trim()} disqualified!`, type: "error" }); resetForm(); }}
+              className="flex-1 py-3 bg-red-800 hover:bg-red-700 border border-red-600 rounded-xl font-bold text-red-200 transition-colors text-sm tracking-wide">
+              Disqualify
+            </button>
+          </div>
         </div>
       )}
 
