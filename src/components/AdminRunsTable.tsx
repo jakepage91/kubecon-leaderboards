@@ -158,7 +158,7 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
                 <th className="py-2 px-2 text-left">Player</th>
                 <th className="py-2 px-2 text-center">Route</th>
                 <th className="py-2 px-2 text-right">Time</th>
-                <th className="py-2 px-2 text-right">Score</th>
+                <th className="py-2 px-2 text-right">Time</th>
                 <th className="py-2 px-2 text-right"></th>
               </tr>
             </thead>
@@ -175,7 +175,6 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
                     </span>
                   </td>
                   <td className="py-2 px-2 text-right font-mono text-gray-700">{formatMs(run.elapsed_ms)}</td>
-                  <td className="py-2 px-2 text-right font-mono text-gray-700">{formatMs(run.score_ms)}</td>
                   <td className="py-2 px-2 text-right whitespace-nowrap">
                     <button onClick={() => openEdit(run)}
                       className="text-indigo-600 hover:text-indigo-500 text-xs font-semibold mr-3">
@@ -277,7 +276,7 @@ export function AdminRunsTable({ userId, onToast }: AdminRunsTableProps) {
               Remove <span className="font-bold text-white">{deletingRun.player_name}</span>&apos;s {deletingRun.route} run?
             </p>
             <p className="text-center text-gray-500 text-xs mb-5">
-              Score: {formatMs(deletingRun.score_ms)} &bull; This will archive the entry.
+              Time: {formatMs(deletingRun.elapsed_ms)} &bull; This will archive the entry.
             </p>
             <div className="grid grid-cols-2 gap-3">
               <button onClick={() => setDeletingRun(null)}

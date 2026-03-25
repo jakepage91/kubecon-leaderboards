@@ -158,7 +158,6 @@ function ScoreTable({
             <th className={"sb-cell sb-cell-rank " + sz.head}>#</th>
             <th className={"sb-cell sb-cell-player " + sz.head}>PLAYER</th>
             <th className={"sb-cell sb-cell-time " + sz.head}>TIME</th>
-            <th className={"sb-cell sb-cell-score " + sz.head}>SCORE</th>
           </tr>
         </thead>
       )}
@@ -174,7 +173,6 @@ function ScoreTable({
               </td>
               <td className={"sb-cell sb-cell-player " + cellSz}>{run?.player_name ?? ""}</td>
               <td className={"sb-cell sb-cell-time " + cellSz}>{run ? formatMs(run.elapsed_ms) : ""}</td>
-              <td className={"sb-cell sb-cell-score " + cellSz}>{run ? formatMs(run.score_ms) : ""}</td>
             </tr>
           );
         })}
