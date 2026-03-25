@@ -410,7 +410,19 @@ function EntryForm({ user }: { user: User }) {
               className="flex-1 text-gray-500 text-sm hover:text-white transition-colors">
               Redo
             </button>
-            <button type="button" onClick={() => { setToast({ message: `${playerName.trim()} disqualified!`, type: "error" }); resetForm(); }}
+            <button type="button" onClick={() => {
+              if (route === "legacy") {
+                // Legacy disqualified — advance to mirrord with same player
+                setToast({ message: `${playerName.trim()} disqualified from Legacy! Now mirrord Fast Lane.`, type: "error" });
+                setLegacyDone(true);
+                setRoute("mirrord");
+                setElapsedMs(0);
+                setPhase("setup");
+              } else {
+                setToast({ message: `${playerName.trim()} disqualified!`, type: "error" });
+                resetForm();
+              }
+            }}
               className="flex-1 py-3 bg-red-800 hover:bg-red-700 border border-red-600 rounded-xl font-bold text-red-200 transition-colors text-sm tracking-wide">
               Disqualify
             </button>
